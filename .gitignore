@@ -8,6 +8,7 @@ __pycache__/
 venv/
 env/
 ENV/
+.env
 
 # Packaging / build
 build/
@@ -17,3 +18,4 @@ dist/
 .ipynb_checkpoints/
 
 data/raw/gtfs/
+
