@@ -5,27 +5,45 @@ import numpy as np
 from typing import Dict
 
 # ---------- Paths ----------
+# Detectar diretório raiz do projeto
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-RAW_DIR = BASE_DIR
-PROCESSED_DIR = os.path.join(BASE_DIR, "processed")
+project_root = BASE_DIR
+while project_root != os.path.dirname(project_root):
+    if os.path.exists(os.path.join(project_root, "README.md")):
+        break
+    project_root = os.path.dirname(project_root)
+
+if not os.path.exists(os.path.join(project_root, "README.md")):
+    project_root = os.path.dirname(os.path.dirname(BASE_DIR))
+
+RAW_DIR = os.path.join(project_root, "data", "raw", "gtfs")
+PROCESSED_DIR = os.path.join(project_root, "data", "processed", "gtfs")
 os.makedirs(PROCESSED_DIR, exist_ok=True)
 
 print(f"[INFO] Base: {BASE_DIR}")
-print(f"[INFO] Processed: {PROCESSED_DIR}")
+print(f"[INFO] Raw GTFS: {RAW_DIR}")
+print(f"[INFO] Processed GTFS: {PROCESSED_DIR}")
 
 # ---------- Helpers ----------
 
-def read_csv_safe(path: str, **kwargs) -> pd.DataFrame:
-    if not os.path.exists(path):
-        print(f"[AVISO] Arquivo não encontrado: {path}")
-        return None
-    try:
-        df = pd.read_csv(path, **kwargs)
-        print(f"[OK] Carregado: {os.path.basename(path)} ({df.shape[0]} linhas, {df.shape[1]} colunas)")
-        return df
-    except Exception as e:
-        print(f"[ERRO] Falha ao carregar {path}: {e}")
-        return None
+def read_csv_safe(base_name: str, base_dir: str, **kwargs) -> pd.DataFrame:
+    """
+    Tenta ler arquivo CSV/GTFS com extensões .txt ou .csv
+    """
+    # Tentar .txt primeiro (formato padrão GTFS), depois .csv
+    for ext in ['.txt', '.csv']:
+        path = os.path.join(base_dir, base_name + ext)
+        if os.path.exists(path):
+            try:
+                df = pd.read_csv(path, **kwargs)
+                print(f"[OK] Carregado: {os.path.basename(path)} ({df.shape[0]} linhas, {df.shape[1]} colunas)")
+                return df
+            except Exception as e:
+                print(f"[ERRO] Falha ao carregar {path}: {e}")
+                return None
+    
+    print(f"[AVISO] Arquivo não encontrado: {base_name}.txt ou {base_name}.csv em {base_dir}")
+    return None
 
 
 def to_int_series(s: pd.Series) -> pd.Series:
@@ -88,22 +106,22 @@ def save_df(df: pd.DataFrame, name: str):
 
 # ---------- Load raw GTFS ----------
 files = {
-    'agency': 'agency.csv',
-    'calendar': 'calendar.csv',
-    'calendar_dates': 'calendar_dates.csv',
-    'fare_attributes': 'fare_attributes.csv',
-    'fare_rules': 'fare_rules.csv',
-    'feed_info': 'feed_info.csv',
-    'routes': 'routes.csv',
-    'shapes': 'shapes.csv',
-    'stop_times': 'stop_times.csv',
-    'stops': 'stops.csv',
-    'trips': 'trips.csv',
+    'agency': 'agency',
+    'calendar': 'calendar',
+    'calendar_dates': 'calendar_dates',
+    'fare_attributes': 'fare_attributes',
+    'fare_rules': 'fare_rules',
+    'feed_info': 'feed_info',
+    'routes': 'routes',
+    'shapes': 'shapes',
+    'stop_times': 'stop_times',
+    'stops': 'stops',
+    'trips': 'trips',
 }
 
 raw: Dict[str, pd.DataFrame] = {}
-for key, fname in files.items():
-    raw[key] = read_csv_safe(os.path.join(RAW_DIR, fname))
+for key, base_name in files.items():
+    raw[key] = read_csv_safe(base_name, RAW_DIR)
 
 print("\n=== LIMPEZA E PADRONIZAÇÃO GTFS ===")
 
