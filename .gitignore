@@ -18,6 +18,5 @@ dist/
 .ipynb_checkpoints/
 
 data/raw/gtfs/
-data/processed/
 database/sql_complete/
 
