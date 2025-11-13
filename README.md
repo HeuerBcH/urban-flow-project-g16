@@ -226,3 +226,10 @@ for file in database/sql_complete/*.sql; do
     docker exec -i urbanflow-postgres psql -U postgres -d urbanflow -f /tmp/sql/$(basename "$file")
 done
 ```
+
+**Copiar GeoJSON para dentro do container:**
+
+```bash
+docker cp data/processed/faixaazul_clean.geojson urbanflow-postgres:/tmp/faixaazul_clean.geojson
+
+depois rodar o geojson_schema.sql
