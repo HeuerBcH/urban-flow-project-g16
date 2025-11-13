@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  grafana-pdc-agent:
+    image: grafana/pdc-agent:latest
+    container_name: urbanflow-pdc
+    restart: always
+    environment:
+      GRAFANA_HOST: "SEU_GRAFANA_HOST"
+      GRAFANA_ID: "SEU_GRAFANA_ID"
+      GRAFANA_PDC_CLUSTER: "SEU_CLUSTER"
+      GRAFANA_PDC_TOKEN: "SEU_TOKEN"
+    network_mode: host

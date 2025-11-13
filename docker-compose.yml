@@ -17,5 +17,19 @@ services:
       timeout: 5s
       retries: 5
 
+  pdc-agent:
+    image: grafana/pdc-agent:latest
+    container_name: pdc-agent
+    # o agent precisa enxergar o host e o Postgres, por isso usamos host
+    network_mode: host
+    restart: always
+    command:
+      - "-token"
+      - "${GRAFANA_PDC_TOKEN}"
+      - "-cluster"
+      - "prod-sa-east-1"
+      - "-gcloud-hosted-grafana-id"
+      - "1414956"
+
 volumes:
   postgres_data:
