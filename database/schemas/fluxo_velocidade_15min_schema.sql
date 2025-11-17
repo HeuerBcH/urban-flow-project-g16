@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS fluxo_velocidade_15min (
+    equipamento VARCHAR(255),
+    faixa INTEGER,
+    data DATE,
+    hora INTEGER,
+    minutos_intervalo VARCHAR(255),
+    qtd_0a10km INTEGER,
+    qtd_11a20km INTEGER,
+    qtd_21a30km INTEGER,
+    qtd_31a40km INTEGER,
+    qtd_41a50km INTEGER,
+    qtd_51a60km INTEGER,
+    qtd_61a70km INTEGER,
+    qtd_71a80km INTEGER,
+    qtd_81a90km INTEGER,
+    qtd_91a100km INTEGER,
+    qtd_acimade100km DECIMAL(10, 2),
+    mes INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

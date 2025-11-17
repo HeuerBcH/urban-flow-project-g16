@@ -10,3 +10,8 @@ jupyter
 ipykernel
 ipywidgets
 python-dotenv
+psycopg2-binary
+sqlalchemy
+requests
+geopandas
+
