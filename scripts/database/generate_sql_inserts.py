@@ -152,8 +152,14 @@ def find_matching_schema(csv_filename: str, schemas_dir: str) -> Optional[str]:
         "fluxo_veiculos_hora_clean.csv": "fluxo_veiculos_hora_schema.sql",
         "fluxo_velocidade_15min_clean.csv": "fluxo_velocidade_15min_schema.sql",
         "monitoramento_cttu_clean.csv": "monitoramento_cttu_schema.sql",
-        "relatorio_fluxo_agosto_2025_clean.csv": "relatorio_fluxo_agosto_schema.sql",
+        "relatorio_fluxo_janeiro_2025_clean.csv": "relatorio_fluxo_janeiro_schema.sql",
         "relatorio_fluxo_fevereiro_2025_clean.csv": "relatorio_fluxo_fevereiro_schema.sql",
+        "relatorio_fluxo_marco_2025_clean.csv": "relatorio_fluxo_marco_schema.sql",
+        "relatorio_fluxo_abril_2025_clean.csv": "relatorio_fluxo_abril_schema.sql",
+        "relatorio_fluxo_maio_2025_clean.csv": "relatorio_fluxo_maio_schema.sql",
+        "relatorio_fluxo_junho_2025_clean.csv": "relatorio_fluxo_junho_schema.sql",
+        "relatorio_fluxo_julho_2025_clean.csv": "relatorio_fluxo_julho_schema.sql",
+        "relatorio_fluxo_agosto_2025_clean.csv": "relatorio_fluxo_agosto_schema.sql",
     }
     
     # Tentar mapeamento direto

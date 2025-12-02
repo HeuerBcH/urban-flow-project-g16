@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS relatorio_fluxo_maio (
+    ano INTEGER,
+    mes INTEGER,
+    equipamento VARCHAR(255),
+    faixa VARCHAR(255),
+    data DATE,
+    hora DECIMAL(10, 2),
+    minutos_intervalo DECIMAL(10, 2),
+    qtd_0a10km DECIMAL(10, 2),
+    qtd_11a20km DECIMAL(10, 2),
+    qtd_21a30km DECIMAL(10, 2),
+    qtd_31a40km DECIMAL(10, 2),
+    qtd_41a50km DECIMAL(10, 2),
+    qtd_51a60km DECIMAL(10, 2),
+    qtd_61a70km DECIMAL(10, 2),
+    qtd_71a80km DECIMAL(10, 2),
+    qtd_81a90km DECIMAL(10, 2),
+    qtd_91a100km DECIMAL(10, 2),
+    qtd_acimade100km DECIMAL(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
