@@ -2,34 +2,37 @@ version: "3.8"
 
 services:
   postgres:
-    image: postgis/postgis:15-3.4   # ← troque esta linha
+    image: postgis/postgis:15-3.4
     container_name: urbanflow-postgres
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: urbanflow
+      POSTGRES_DB: ${POSTGRES_DB:-urbanflow}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres}"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   pdc-agent:
     image: grafana/pdc-agent:latest
-    container_name: pdc-agent
-    # o agent precisa enxergar o host e o Postgres, por isso usamos host
+    container_name: urbanflow-pdc-agent
+    # o agent precisa enxergar o host e o Postgres
     network_mode: host
     restart: always
     command:
       - "-token"
       - "${GRAFANA_PDC_TOKEN}"
       - "-cluster"
-      - "prod-sa-east-1"
+      - "${GRAFANA_PDC_CLUSTER}"
       - "-gcloud-hosted-grafana-id"
-      - "1414956"
+      - "${GRAFANA_PDC_ID}"
+    environment:
+      GRAFANA_HOST: "${GRAFANA_HOST}"
 
 volumes:
   postgres_data:
