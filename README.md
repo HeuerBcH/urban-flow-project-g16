@@ -1,60 +1,214 @@
-# analise-visualizacao-dados-g17
+# 🚦 Urban Flow - Sistema de Análise de Mobilidade Urbana
 
-https://mapsplatform.google.com/lp/maps-apis/
-API google maps
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-15-blue.svg)](https://www.postgresql.org/)
+[![PostGIS](https://img.shields.io/badge/PostGIS-3.4-green.svg)](https://postgis.net/)
+[![Python](https://img.shields.io/badge/Python-3.8+-yellow.svg)](https://www.python.org/)
+[![Grafana](https://img.shields.io/badge/Grafana-Latest-orange.svg)](https://grafana.com/)
 
-https://www.openstreetmap.org/#map=18/-8.064366/-34.878910
-Open Street Map
+Sistema completo de análise e visualização de dados de mobilidade urbana, integrando dados de tráfego, transporte público (GTFS), semáforos e infraestrutura viária com visualizações interativas em Grafana.
 
-https://openweathermap.org/api
-OpenWeather
+## 🎯 Sobre o Projeto
 
-urbanflow/
-├── data/
-│ ├── raw/ # DADOS BRUTOS
-│ │ ├── linha_701.csv
-│ │ ├── linha_702.csv
-│ │ │ └── ... (16 arquivos)
-│ │ └── gtfs/ # Dados GTFS
-│ │ └── complementares/ # Dados auxiliares (metadados, trajetos, etc)
-│ ├── samples/ # AMOSTRAS - Subconjuntos pequenos para teste
-│ │ └── amostras_1000_linhas/
-│ ├── processed/ # DADOS PROCESSADOS
-│ └── analysis/ # ANÁLISES - Relatórios, estatísticas, métricas de qualidade
-├── scripts/
-│ ├── database/ # SCRIPTS DE BANCO - Setup, migrações, carregamento
-│ ├── collectors/ # COLETORES - APIs
-│ └── utils/ # UTILITÁRIOS - Funções auxiliares reutilizáveis
-├── database/
-│ ├── schemas/ # SCHEMAS SQL - Definições de tabelas, índices
-│ └── migrations/ # MIGRAÇÕES - Scripts para evolução do schema
-├── grafana/ # Configurações do Grafana
-└── .env.example
+O **Urban Flow** é uma plataforma de análise de dados de mobilidade urbana desenvolvida para processar, armazenar e visualizar informações sobre:
 
-scripts/ # MOTOR DO PROJETO - Todo código executável
+- 🚗 Fluxo de veículos e velocidade média
+- 🚦 Localização e status de semáforos
+- 🚌 Dados de transporte público (formato GTFS)
+- 📊 Equipamentos de medição de velocidade
+- 🗺️ Dados geoespaciais de infraestrutura viária
+- 📈 Relatórios mensais de tráfego
+
+O sistema utiliza PostgreSQL com extensão PostGIS para armazenamento de dados geoespaciais e Grafana para criação de dashboards interativos.
+
+## ✨ Funcionalidades
+
+- **Processamento de Dados**: Pipeline completo de ETL para dados de mobilidade urbana
+- **Armazenamento Geoespacial**: Banco de dados PostgreSQL/PostGIS otimizado para consultas espaciais
+- **Visualização Interativa**: Dashboards em Grafana com mapas e gráficos em tempo real
+- **Suporte GTFS**: Importação e análise de dados de transporte público no formato GTFS
+- **Análise Temporal**: Agregações por hora, dia, semana e mês
+- **Integração com APIs**: Coleta de dados de clima (OpenWeather) e mapas (OpenStreetMap)
+
+## 🏗️ Arquitetura
+
+```
+┌─────────────────┐
+│   Dados Brutos  │
+│  (CSV, GTFS)    │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Scripts Python │
+│  (Limpeza/ETL)  │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│   PostgreSQL    │
+│   + PostGIS     │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│     Grafana     │
+│   (Dashboards)  │
+└─────────────────┘
+```
+
+## 📦 Pré-requisitos
+
+### Software Necessário
+
+- **Python 3.8+** - [Download](https://www.python.org/downloads/)
+- **Docker & Docker Compose** - [Download](https://www.docker.com/products/docker-desktop/)
+- **Git** - [Download](https://git-scm.com/downloads)
+- **Jupyter Notebook** (incluído nas dependências Python)
+
+## 🚀 Instalação
+
+### 1. Clonar o Repositório
+
+```bash
+git clone https://github.com/HeuerBcH/urban-flow-project-g16.git
+cd urban-flow-project-g16
+```
+
+### 2. Configurar Ambiente Python
+
+```bash
+# Criar ambiente virtual (recomendado)
+python -m venv venv
+
+# Ativar ambiente virtual
+# Windows
+venv\Scripts\activate
+# Linux/Mac
+source venv/bin/activate
+
+# Instalar dependências
+pip install -r requirements.txt
+```
+
+### 3. Configurar Variáveis de Ambiente
+
+Copie o arquivo `.env.example` para `.env` e configure as variáveis:
+
+```bash
+# Windows
+copy .env.example .env
+# Linux/Mac
+cp .env.example .env
+```
+
+Edite o arquivo `.env` com suas configurações:
+
+```env
+# Configurações do PostgreSQL
+POSTGRES_DB=urbanflow
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=sua_senha_segura
+DB_PORT=5432
+
+# Configurações do Grafana (opcional)
+GRAFANA_PDC_TOKEN=seu_token
+GRAFANA_PDC_CLUSTER=seu_cluster
+GRAFANA_PDC_ID=seu_id
+GRAFANA_HOST=http://localhost:3000
+```
+
+### 4. Iniciar Serviços com Docker
+
+```bash
+# Iniciar PostgreSQL e Grafana Agent
+docker-compose up -d
+
+# Verificar se os containers estão rodando
+docker ps
+
+# Ver logs em tempo real
+docker-compose logs -f
+```
+
+## 📁 Estrutura do Projeto
+
+```
+urban-flow-project-g16/
 │
-├── database/ # CAMADA DE DADOS - Interação com PostgreSQL
-│ │
-│ ├── setup_database.py # Configura inicialmente o schema no Neon
-│ └── cleaning.ipynb # Limpa e Carrega os CSVs para o banco
-├── collectors/ # CAMADA DE COLETA - Integração com APIs externas
-│ │
-│ ├── weather_collector.py # Coleta dados de clima da API
-│ ├── osm_collector.py # Coleta dados geoespaciais do OpenStreetMap
-│ └── sptrans_collector.py # Coleta dados em tempo real (se disponível)
-└── utils/ # BIBLIOTECA INTERNA - Funções compartilhadas (Código reutilizável)
-
-grafana/ # CAMADA DE VISUALIZAÇÃO - Dashboards e relatórios
+├── data/                           # Diretório de dados
+│   ├── raw/                        # Dados brutos (CSV, GTFS)
+│   │   ├── gtfs/                   # Arquivos GTFS (.txt)
+│   │   └── complementares/         # Dados auxiliares
+│   ├── samples/                    # Amostras para testes
+│   │   └── amostras_1000_linhas/
+│   ├── processed/                  # Dados processados e limpos
+│   └── analysis/                   # Análises e relatórios
 │
-├── dashboard.json # Export do dashboard principal
-├── datasource.yaml # Configuração da conexão com Neon
-└── alerts.yaml # Configuração de alertas e notificações
+├── scripts/                        # Scripts Python
+│   ├── database/                   # Scripts de banco de dados
+│   │   ├── setup_database.py      # Configuração inicial
+│   │   ├── cleaning.ipynb          # Notebook de limpeza
+│   │   ├── clean_gtfs.py           # Processamento GTFS
+│   │   └── generate_sql_inserts.py # Geração de SQL
+│   ├── collectors/                 # Coletores de APIs
+│   │   ├── weather_collector.py   # API OpenWeather
+│   │   ├── osm_collector.py        # OpenStreetMap
+│   │   └── sptrans_collector.py    # Dados SPTrans
+│   └── utils/                      # Utilitários
+│       └── teste_conexao.py        # Teste de conexão DB
+│
+├── database/                       # Arquivos de banco de dados
+│   ├── schemas/                    # Schemas SQL
+│   │   ├── semaforos_schema.sql
+│   │   ├── fluxo_veiculos_hora_schema.sql
+│   │   ├── gtfs_*.sql              # Schemas GTFS
+│   │   └── ...
+│   ├── migrations/                 # Scripts de migração
+│   └── sql_complete/               # SQL completo (CREATE + INSERT)
+│
+├── grafana/                        # Configurações Grafana
+│   ├── dashboard.json              # Dashboard principal
+│   └── datasource.yaml             # Configuração de datasource
+│
+├── docker-compose.yml              # Configuração Docker
+├── requirements.txt                # Dependências Python
+├── .env.example                    # Exemplo de variáveis de ambiente
+├── .gitignore                      # Arquivos ignorados pelo Git
+└── README.md                       # Este arquivo
+```
 
-## Passo a Passo: Processar Dados e Popular Banco
+## Guia de Uso
+
+### Passo a Passo: Processar Dados e Popular Banco
 
 ### 1. Preparar os Dados
 
-Coloque os arquivos CSV brutos em `data/raw/` e os arquivos GTFS (`.txt`) em `data/raw/gtfs/`.
+**Obter os Dados Brutos**
+
+Os dados brutos necessários para o projeto estão disponíveis no Google Drive:
+
+ 🔗 **[Acessar Drive com os Dados](https://drive.google.com/drive/u/1/folders/1HMpYaU5QP3S1Tov7Oe94_EjWSHmJPVJ5)**
+
+Faça o download dos seguintes arquivos:
+- Arquivos GTFS (formato `.txt`)
+- Scripts SQL prontos (schemas e inserts completos)
+
+> **💡 Dica**: Se você preferir pular as etapas de processamento (passos 2-4), pode baixar diretamente os scripts SQL já processados do Drive e ir direto para o passo 5 (Popular Banco PostgreSQL).
+
+**Organizar os Arquivos**
+
+Após o download, organize os arquivos nas seguintes pastas:
+
+```bash
+# Arquivos CSV de tráfego
+data/raw/
+
+# Arquivos GTFS (.txt)
+data/raw/gtfs/
+
+# Dados complementares (opcional)
+data/raw/complementares/
+```
 
 ### 2. Processar Dados Normais
 
@@ -232,4 +386,142 @@ done
 ```bash
 docker cp data/processed/faixaazul_clean.geojson urbanflow-postgres:/tmp/faixaazul_clean.geojson
 
-depois rodar o geojson_schema.sql
+# Executar schema GeoJSON
+docker exec -i urbanflow-postgres psql -U postgres -d urbanflow -f /database/schemas/geojson_schema.sql
+```
+
+### 7. Verificar Dados Carregados
+
+```bash
+# Conectar ao banco
+docker exec -it urbanflow-postgres psql -U postgres -d urbanflow
+
+# Listar tabelas
+\dt
+
+# Verificar quantidade de registros
+SELECT 'semaforos' as tabela, COUNT(*) FROM semaforos
+UNION ALL
+SELECT 'fluxo_veiculos_hora', COUNT(*) FROM fluxo_veiculos_hora
+UNION ALL
+SELECT 'gtfs_stops', COUNT(*) FROM gtfs_stops;
+
+# Sair
+\q
+```
+
+## 📊 Dados e Schemas
+
+### Tabelas Principais
+
+#### Dados de Tráfego
+
+- **`semaforos`**: Localização e informações de semáforos
+  - Campos: id, logradouro, bairro, latitude, longitude, tipo
+  
+- **`equipamentos_medicao_velocidade`**: Equipamentos de medição (radares)
+  - Campos: id, logradouro, bairro, latitude, longitude, tipo_equipamento
+  
+- **`fluxo_veiculos_hora`**: Fluxo de veículos agregado por hora
+  - Campos: id, data_hora, quantidade_veiculos, velocidade_media, local
+  
+- **`fluxo_velocidade_15min`**: Fluxo e velocidade em intervalos de 15 minutos
+  - Campos: id, timestamp, velocidade_media, volume_trafego, local
+  
+- **`monitoramento_cttu`**: Dados de monitoramento da CTTU
+  - Campos: id, data_hora, tipo_evento, localizacao, descricao
+
+#### Relatórios Mensais
+
+- **`relatorio_fluxo_janeiro`** até **`relatorio_fluxo_agosto`**
+  - Dados agregados mensais de fluxo de veículos
+  - Campos: data, hora, local, quantidade, velocidade_media
+
+#### Dados GTFS (Transporte Público)
+
+- **`gtfs_agency`**: Informações das agências de transporte
+- **`gtfs_routes`**: Rotas de ônibus
+- **`gtfs_trips`**: Viagens programadas
+- **`gtfs_stops`**: Pontos de parada
+- **`gtfs_stop_times`**: Horários de parada
+- **`gtfs_shapes`**: Geometria das rotas
+- **`gtfs_calendar`**: Calendário de operação
+- **`gtfs_calendar_dates`**: Exceções de calendário
+- **`gtfs_fare_attributes`**: Atributos de tarifa
+- **`gtfs_fare_rules`**: Regras de tarifa
+- **`gtfs_feed_info`**: Informações do feed
+
+### Formato GTFS
+
+O projeto suporta o formato [General Transit Feed Specification (GTFS)](https://gtfs.org/), padrão internacional para dados de transporte público. Os arquivos GTFS devem ser colocados no diretório `data/raw/gtfs/`.
+
+## 📈 Visualização com Grafana
+
+### Acessar Grafana
+
+1. Acesse `http://localhost:3000` no navegador
+2. Login padrão: `admin` / `admin`
+3. Configure o datasource PostgreSQL:
+   - Host: `urbanflow-postgres:5432`
+   - Database: `urbanflow`
+   - User: `postgres`
+   - Password: (conforme configurado no `.env`)
+
+### Importar Dashboard
+
+```bash
+# O dashboard está em grafana/dashboard.json
+# No Grafana:
+# 1. Vá em Dashboards > Import
+# 2. Faça upload do arquivo grafana/dashboard.json
+# 3. Selecione o datasource PostgreSQL configurado
+```
+
+## 🐛 Troubleshooting
+
+### Erro: "Container já existe"
+
+```bash
+docker rm urbanflow-postgres
+docker-compose up -d
+```
+
+### Erro: "Porta 5432 já em uso"
+
+```bash
+# Alterar porta no .env
+DB_PORT=5433
+
+# Ou parar PostgreSQL local
+# Windows
+net stop postgresql-x64-15
+# Linux
+sudo systemctl stop postgresql
+```
+
+### Erro: "Módulo não encontrado"
+
+```bash
+# Reinstalar dependências
+pip install -r requirements.txt
+```
+
+### Dados não aparecem no Grafana
+
+1. Verificar se o banco tem dados: `SELECT COUNT(*) FROM semaforos;`
+2. Verificar conexão do datasource no Grafana
+3. Verificar queries nos painéis do dashboard
+
+## 👥 Equipe
+
+**Grupo 16** - Análise e Visualização de Dados de Mobilidade Urbana
+
+### Contribuintes
+
+- Acioli, Erick
+- Cardozo, Guilherme
+- Fittipaldi, Silvio
+- Heuer, Bernardo
+- Nunes, Rodrigo
+- Perylo, Luis Felipe
+- Roma, Eduardo
