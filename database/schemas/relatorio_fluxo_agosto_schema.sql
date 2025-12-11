@@ -1,0 +1,21 @@
+CREATE TABLE IF NOT EXISTS relatorio_fluxo_agosto (
+    ano INTEGER,
+    mes INTEGER,
+    equipamento VARCHAR(255),
+    faixa VARCHAR(255),
+    data DATE,
+    hora INTEGER,
+    minutos_intervalo VARCHAR(255),
+    qtd_0a10km INTEGER,
+    qtd_11a20km INTEGER,
+    qtd_21a30km INTEGER,
+    qtd_31a40km INTEGER,
+    qtd_41a50km INTEGER,
+    qtd_51a60km INTEGER,
+    qtd_61a70km INTEGER,
+    qtd_71a80km INTEGER,
+    qtd_81a90km INTEGER,
+    qtd_91a100km INTEGER,
+    qtd_acimade100km INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

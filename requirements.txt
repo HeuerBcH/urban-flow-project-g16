@@ -1,0 +1,17 @@
+numpy
+pandas
+matplotlib
+seaborn
+plotly
+scipy
+scikit-learn
+statsmodels
+jupyter
+ipykernel
+ipywidgets
+python-dotenv
+psycopg2-binary
+sqlalchemy
+requests
+geopandas
+
